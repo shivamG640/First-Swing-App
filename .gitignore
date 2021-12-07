@@ -1,0 +1,10 @@
+# Compiled class file
+*.class
+
+bin/
+
+.settings/
+
+.classpath
+
+.project
