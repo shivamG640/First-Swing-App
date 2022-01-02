@@ -13,6 +13,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import model.EmploymentCategory;
 import model.Person;
 
 public class TablePanel extends JPanel {
@@ -25,6 +26,10 @@ public class TablePanel extends JPanel {
 	public TablePanel() {
 		tableModel = new PersonTableModel();
 		table = new JTable(tableModel);
+		table.setRowHeight(20);
+		
+		table.setDefaultRenderer(EmploymentCategory.class, new EmploymentCategoryRenderer());
+		table.setDefaultEditor(EmploymentCategory.class, new EmploymentCategoryEditor());
 		
 		setLayout(new BorderLayout());
 		add(new JScrollPane(table), BorderLayout.CENTER);

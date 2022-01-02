@@ -22,6 +22,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 
 import com.sun.glass.events.KeyEvent;
@@ -30,7 +32,6 @@ import controller.Controller;
 
 public class MainFrame extends JFrame {
 
-	private TextPanel textPanel;
 	private Toolbar toolbar;
 	private FormPanel formPanel;
 	private JFileChooser fileChooser;
@@ -40,12 +41,12 @@ public class MainFrame extends JFrame {
 	private Preferences prefs;	
 	private JSplitPane splitPane;
 	private JTabbedPane tabPane;
+	private MessagePanel messagePanel;
 	
 	public MainFrame() {
 		super("Hello World");
 		setLayout(new BorderLayout());
 
-		textPanel = new TextPanel();
 		toolbar = new Toolbar();
 		formPanel = new FormPanel();
 		
@@ -56,6 +57,7 @@ public class MainFrame extends JFrame {
 		prefsDialog = new PrefsDialog(this);
 
 		tabPane = new JTabbedPane();
+		messagePanel = new MessagePanel(this);
 		
 		tablePanel = new TablePanel();
 		tablePanel.setData(controller.getPeople());
@@ -64,7 +66,20 @@ public class MainFrame extends JFrame {
 		splitPane.setOneTouchExpandable(true);
 		
 		tabPane.addTab("Person DB", tablePanel);
-		tabPane.addTab("Messages", textPanel);
+		tabPane.addTab("Messages", messagePanel);
+		
+		tabPane.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+
+				int tabIndex = tabPane.getSelectedIndex();
+				
+				if(tabIndex == 1) {
+					messagePanel.refresh();
+				}
+			}
+		});
 		
 		tablePanel.setPersonTableListener(new PersonTableListener() {
 			public void rowDeleted(int row) {
@@ -138,16 +153,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void refreshEventOccured() {
 				// TODO Auto-generated method stub
-				connect();
-				
-				try {
-					controller.load();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(MainFrame.this, "Unable to load from DB", "DB connection problem", JOptionPane.ERROR_MESSAGE);
-				}
-				
-				tablePanel.refresh();
+				refresh();
 			}
 
 		});
@@ -187,6 +193,8 @@ public class MainFrame extends JFrame {
 		add(splitPane, BorderLayout.CENTER);
 
 		add(toolbar, BorderLayout.PAGE_START);
+		
+		refresh();
 
 		setMinimumSize(new Dimension(500, 400));
 		setSize(600, 600);
@@ -194,6 +202,22 @@ public class MainFrame extends JFrame {
 		setVisible(true);
 	}
 	
+	protected void refresh() {
+		// TODO Auto-generated method stub
+		
+		connect();
+		
+		try {
+			controller.load();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(MainFrame.this, "Unable to load from DB", "DB connection problem", JOptionPane.ERROR_MESSAGE);
+		}
+		
+		tablePanel.refresh();
+		
+	}
+
 	public void connect() {
 		try {
 			controller.connect();

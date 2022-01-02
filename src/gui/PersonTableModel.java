@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import model.EmploymentCategory;
 import model.Person;
 
 public class PersonTableModel extends AbstractTableModel {
@@ -56,6 +57,66 @@ public class PersonTableModel extends AbstractTableModel {
 	public String getColumnName(int column) {
 		// TODO Auto-generated method stub
 		return colNames[column];
+	}
+
+	@Override
+	public boolean isCellEditable(int row, int col) {
+		// TODO Auto-generated method stub
+		switch(col) {
+		case 1:
+			return true;
+		case 4:
+			return true;
+		case 5:
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	@Override
+	public void setValueAt(Object value, int row, int col) {
+		// TODO Auto-generated method stub
+		
+		if(db == null) return;
+		Person person = db.get(row);
+		
+		switch(col) {
+		case 1:
+			person.setName((String) value);
+			break;
+		case 4:
+			person.setEmpCat((EmploymentCategory)value);
+			break;
+		case 5:
+			person.setUsCitizen((Boolean) value);
+			break;
+		default:
+			return;
+		}
+	}
+
+	@Override
+	public Class<?> getColumnClass(int col) {
+		// TODO Auto-generated method stub
+		switch (col) {
+		case 0:
+			return Integer.class;
+		case 1:
+			return String.class;
+		case 2:
+			return String.class;
+		case 3:
+			return String.class;
+		case 4:
+			return EmploymentCategory.class;
+		case 5:
+			return Boolean.class;
+		case 6:
+			return String.class;
+		default:
+			return null;
+		}
 	}
 
 }

@@ -1,8 +1,22 @@
 package model;
 
 public enum EmploymentCategory {
-	employed,
-	selfEmployed,
-	unemployed,
-	other
+	employed("employed"),
+	selfEmployed("self employed"),
+	unemployed("unemployed"),
+	other("other");
+	
+	private String text;
+	
+	private EmploymentCategory(String text) {
+		this.text = text; 
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return text;
+	}
+	
+	
 }
